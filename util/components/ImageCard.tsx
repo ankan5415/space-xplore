@@ -14,6 +14,7 @@ const ImageCard = (props: iImageData) => {
       _hover={{ bg: "gray.100", cursor: "pointer" }}
       onClick={() => onOpen()}
     >
+      <ImageDetails {...props} isOpen={isOpen} onClose={onClose} />
       <Box w="100%" h={250} position="relative">
         <Image
           onDragStart={(e) => e.preventDefault()}
@@ -47,7 +48,6 @@ const ImageCard = (props: iImageData) => {
           {props.explanation}
         </Text>
       </Stack>
-      <ImageDetails {...props} isOpen={isOpen} onClose={onClose} />
     </Box>
   );
 };

@@ -3,13 +3,13 @@ import {
   ModalOverlay,
   ModalContent,
   ModalHeader,
-  ModalFooter,
   ModalBody,
   ModalCloseButton,
-  Button,
-  Heading,
+  Box,
+  Text,
 } from "@chakra-ui/react";
-import { iImageData } from "../../types";
+import type { iImageData } from "../../types";
+import Image from "next/image";
 
 interface iImageDetailsProps extends iImageData {
   isOpen: boolean;
@@ -18,21 +18,42 @@ interface iImageDetailsProps extends iImageData {
 
 const ImageDetails = (props: iImageDetailsProps) => {
   return (
-    <Modal isOpen={props.isOpen} onClose={props.onClose}>
+    <Modal isOpen={props.isOpen} size="3xl" onClose={props.onClose}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>{props.title}</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <Heading>This is a test</Heading>
+          <Box minW="250px" w="100%" minH="300px" h="80%" position="relative">
+            <Image
+              onDragStart={(e) => e.preventDefault()}
+              src={props.hdurl}
+              alt="Picture of the author"
+              layout="fill"
+              objectFit="cover"
+              placeholder="blur"
+              blurDataURL="https://apod.nasa.gov/apod/image/1901/IC342Medvedevas1024.jpg"
+            />
+          </Box>
+          <Text
+            color="gray.500"
+            fontWeight="semibold"
+            letterSpacing="wide"
+            fontSize="sm"
+            my={3}
+          >
+            Published on {props.date}
+          </Text>
+          <Text
+            mt="1"
+            fontWeight="medium"
+            fontSize="sm"
+            lineHeight="tight"
+            my={3}
+          >
+            {props.explanation}
+          </Text>
         </ModalBody>
-
-        <ModalFooter>
-          <Button colorScheme="blue" mr={3} onClick={props.onClose}>
-            Close
-          </Button>
-          <Button variant="ghost">Secondary Action</Button>
-        </ModalFooter>
       </ModalContent>
     </Modal>
   );
