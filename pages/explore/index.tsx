@@ -25,15 +25,20 @@ const Explore = () => {
     if (savedLikedPosts) setLiked(JSON.parse(savedLikedPosts));
   }, []);
 
+  // Updates localstorage every time liked is changed
+  useEffect(() => {
+    localStorage.setItem("likedPosts", JSON.stringify(liked));
+  }, [liked]);
+
   const handleLikeClick = (date: string) => {
     // if date is already in liked, remove it from liked state
+
     if (liked.includes(date)) {
       setLiked(liked.filter((like) => like !== date));
     } else {
       // else, add it to state
       setLiked([...liked, date]);
     }
-    localStorage.setItem("likedPosts", JSON.stringify(liked));
   };
 
   if (isLoading) return <div>Loading...</div>;
