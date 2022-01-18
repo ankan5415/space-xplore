@@ -15,23 +15,20 @@ import type { NextPage } from "next";
 import { iImageData } from "../../types";
 import getImageData from "../../util/api/getImageData";
 
-// sets the number of posts we want to fetch per call
+// sets the number of posts we want to fetch per API call
 const FETCH_AMOUNT = 10;
 
 // Page to show image data
 const Explore: NextPage = () => {
-  // for error alerts
   const toast = useToast();
-  // reroutes the user back to the main page if there is an error
   const router = useRouter();
 
-  /* use date as the unique id for the images since they're not as long as the URL and APOD ensures that there is always one date per picture */
   const [liked, setLiked] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [imageData, setImageData] = useState<iImageData[]>([]);
 
   // ------ DATA FETCHING ------
-  // function to fetch data from the api
+  // fetch data from the api and push user back to main page if it errors
   const fetchImageData = async (count: number, skip: number) => {
     setIsLoading(true);
     try {
@@ -46,6 +43,7 @@ const Explore: NextPage = () => {
         duration: 10000,
         isClosable: true,
       });
+      router.push("/");
     }
     setIsLoading(false);
   };
@@ -58,7 +56,7 @@ const Explore: NextPage = () => {
     if (savedLikedPosts) setLiked(JSON.parse(savedLikedPosts));
   }, []);
 
-  // Updates localstorage every time liked is changed
+  // Updates localstorage every time liked state is changed
   useEffect(() => {
     localStorage.setItem("likedPosts", JSON.stringify(liked));
   }, [liked]);
@@ -76,6 +74,7 @@ const Explore: NextPage = () => {
   // ------ INFINITE SCROLL ------
 
   const handleScroll = () => {
+    // check if user has reached bottom of page
     const bottom =
       Math.ceil(window.innerHeight + window.scrollY) >=
       document.documentElement.scrollHeight;
@@ -109,9 +108,7 @@ const Explore: NextPage = () => {
           Click on the cards to view more details, and keep scrolling to view
           more!
         </Heading>
-        {/* Responsive grid */}
         <SimpleGrid columns={{ sm: 1, md: 2, lg: 3 }} gap={6} w="100%">
-          {/* reverse the array without modifying it to show data from most recent to least recent*/}
           {imageData.map((el, index: number) => {
             if (el.media_type === "image")
               return (
