@@ -21,7 +21,7 @@ const ImageCard = (props: iImageCardProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <>
-      {/* Modal Section */}
+      {/* Modal */}
       <ImageDetails {...props} isOpen={isOpen} onClose={onClose} />
       {/* Actual image card */}
       <Box
@@ -30,7 +30,8 @@ const ImageCard = (props: iImageCardProps) => {
         borderRadius="lg"
         overflow="hidden"
         m="5"
-        _hover={{ bg: "gray.100", cursor: "pointer" }}
+        _hover={{ shadow: "2xl", cursor: "pointer" }}
+        transition="ease-out 0.2s"
         onClick={() => onOpen()}
       >
         <Box w="100%" h={250} position="relative">

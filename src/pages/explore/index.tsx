@@ -37,16 +37,15 @@ const Explore: NextPage = () => {
     try {
       const data = await getImageData({ count, skip });
       setImageData([...imageData, ...data.slice().reverse()]);
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
       toast({
-        title: "Error",
-        description: "There was an error fetching the data",
+        title: "Error Fetching Data",
+        description: error.message,
         status: "error",
         duration: 10000,
         isClosable: true,
       });
-      router.push("/");
     }
     setIsLoading(false);
   };
@@ -101,13 +100,14 @@ const Explore: NextPage = () => {
   if (isLoading && imageData.length === 0) return <LoadingScreen />;
 
   return (
-    <Center bgColor="background">
+    <Center bgColor="background" minH="100vh">
       <Stack p="10" spacing="4" w="100%" alignItems={"center"}>
         <Heading as="h1" size="2xl" color="heroTitle" fontWeight={700}>
           Our Universe In Images.
         </Heading>
         <Heading as="h2" size="md">
-          Click on the cards to view more details!
+          Click on the cards to view more details, and keep scrolling to view
+          more!
         </Heading>
         {/* Responsive grid */}
         <SimpleGrid columns={{ sm: 1, md: 2, lg: 3 }} gap={6} w="100%">
@@ -126,18 +126,20 @@ const Explore: NextPage = () => {
           })}
         </SimpleGrid>
       </Stack>
-      {isLoading && (
-        <Stack
-          p="2"
-          borderRadius="full"
-          bg="white"
-          position="absolute"
-          bottom="10"
-          left="50%"
-        >
-          <Spinner size="xl" color="blue.400" />
-        </Stack>
-      )}
+      {/* Loading Spinner for infinite load */}
+      <Stack
+        p="2"
+        visibility={isLoading ? "visible" : "hidden"}
+        borderRadius="full"
+        bg="white"
+        position="absolute"
+        bottom="10"
+        left="50%"
+        transform="translate(-50%, 0%)"
+        shadow={"lg"}
+      >
+        <Spinner size="xl" color="blue.400" />
+      </Stack>
     </Center>
   );
 };
