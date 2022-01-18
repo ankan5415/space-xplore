@@ -1,3 +1,4 @@
+// define the shape of the API data that we receive
 export interface iImageData {
   date: string;
   explanation: string;

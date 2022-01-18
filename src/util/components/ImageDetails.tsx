@@ -26,14 +26,14 @@ const ImageDetails = (props: iImageDetailsProps) => {
         <ModalBody>
           <Box minW="250px" w="100%" minH="300px" h="80%" position="relative">
             <Image
-              quality={50}
+              quality={10}
               onDragStart={(e) => e.preventDefault()}
               src={props.hdurl}
-              alt="Picture of the author"
+              alt="Picture from NASA"
               layout="fill"
               objectFit="cover"
               placeholder="blur"
-              blurDataURL="https://apod.nasa.gov/apod/image/1901/IC342Medvedevas1024.jpg"
+              blurDataURL="https://apod.nasa.gov/apod/image/1901/IC342Medvedevas1024.jpg" // a random placeholder image
             />
           </Box>
           <Text

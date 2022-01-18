@@ -10,10 +10,10 @@ const Home: NextPage = () => {
           Spacestagram
         </Heading>
         <Heading as="h2" size="md">
-          View the beauty of the universe through the eyes of NASA&apos;s space
-          telescope.
+          View the beauty of the earth/universe through the eyes of NASA
         </Heading>
         <Center>
+          {/* Redirect to explore page*/}
           <Link href="/explore" passHref>
             <Button
               as="a"

@@ -1,5 +1,5 @@
 import { extendTheme } from "@chakra-ui/react";
-
+// Custom styles for Chakra UI
 export const theme = extendTheme({
   fonts: {
     body: "Inter",
