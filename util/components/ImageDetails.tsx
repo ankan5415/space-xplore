@@ -26,6 +26,7 @@ const ImageDetails = (props: iImageDetailsProps) => {
         <ModalBody>
           <Box minW="250px" w="100%" minH="300px" h="80%" position="relative">
             <Image
+              quality={50}
               onDragStart={(e) => e.preventDefault()}
               src={props.hdurl}
               alt="Picture of the author"
