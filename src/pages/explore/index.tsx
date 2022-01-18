@@ -16,7 +16,7 @@ import { iImageData } from "../../types";
 import getImageData from "../../util/api/getImageData";
 
 // sets the number of posts we want to fetch per call
-const FETCH_AMOUNT = 15;
+const FETCH_AMOUNT = 10;
 
 // Page to show image data
 const Explore: NextPage = () => {
@@ -82,8 +82,6 @@ const Explore: NextPage = () => {
       document.documentElement.scrollHeight;
 
     if (bottom) {
-      console.log("incrementing skip");
-      console.log("skip: ", imageData.length);
       fetchImageData(FETCH_AMOUNT, imageData.length);
     }
   };

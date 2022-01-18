@@ -5,11 +5,17 @@ import { Button, Center, Heading, Stack } from "@chakra-ui/react";
 const Home: NextPage = () => {
   return (
     <Center bgColor="background" height="100vh">
-      <Stack w="40%" spacing="5">
-        <Heading as="h1" size="4xl" color="heroTitle" fontWeight={700}>
+      <Stack w={{ base: "80%", md: "50%" }} spacing="5">
+        <Heading
+          as="h1"
+          fontSize={{ base: "4xl", md: "4xl", lg: "6xl" }}
+          color="heroTitle"
+          textAlign={"center"}
+          fontWeight={700}
+        >
           Spacestagram
         </Heading>
-        <Heading as="h2" size="md">
+        <Heading as="h2" fontSize="lg" textAlign={"center"}>
           View the beauty of the earth/universe through the eyes of NASA
         </Heading>
         <Center>
