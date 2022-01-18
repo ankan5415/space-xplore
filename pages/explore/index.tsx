@@ -3,15 +3,14 @@ import ImageCard from "../../util/components/ImageCard";
 import useImageData from "../../util/hooks/useImageData";
 import { useToast } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import LoadingScreen from "../../util/components/LoadingScreen";
 
 const Explore = () => {
   const toast = useToast();
   const router = useRouter();
-  const { data, isLoading, isError } = useImageData();
-
   const [liked, setLiked] = useState<string[]>([]);
+  const { data, isLoading, isError } = useImageData();
 
   useEffect(() => {
     const savedLikedPosts = localStorage.getItem("likedPosts");
@@ -57,18 +56,22 @@ const Explore = () => {
           Click on the cards to view more details!
         </Heading>
         <SimpleGrid columns={{ sm: 1, md: 2, lg: 3 }} gap={6} w="100%">
-          {data.map((el, index: number) => {
-            if (el.media_type === "image")
-              return (
-                <GridItem justifyContent={"center"} key={index}>
-                  <ImageCard
-                    {...el}
-                    isLiked={liked.includes(el.date)}
-                    handleLikeClick={handleLikeClick}
-                  />
-                </GridItem>
-              );
-          })}
+          {/* reverse the array without modifying it */}
+          {data
+            .slice()
+            .reverse()
+            .map((el, index: number) => {
+              if (el.media_type === "image")
+                return (
+                  <GridItem justifyContent={"center"} key={index}>
+                    <ImageCard
+                      {...el}
+                      isLiked={liked.includes(el.date)}
+                      handleLikeClick={handleLikeClick}
+                    />
+                  </GridItem>
+                );
+            })}
         </SimpleGrid>
       </Stack>
     </Center>
