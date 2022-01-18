@@ -1,11 +1,22 @@
-import { Center, Heading, Stack, SimpleGrid, GridItem } from "@chakra-ui/react";
+import {
+  Center,
+  Heading,
+  Stack,
+  SimpleGrid,
+  GridItem,
+  Spinner,
+} from "@chakra-ui/react";
 import ImageCard from "../../util/components/ImageCard";
-import useImageData from "../../util/hooks/useImageData";
 import { useToast } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import LoadingScreen from "../../util/components/LoadingScreen";
 import type { NextPage } from "next";
+import { iImageData } from "../../types";
+import getImageData from "../../util/api/getImageData";
+
+// sets the number of posts we want to fetch per call
+const FETCH_AMOUNT = 15;
 
 // Page to show image data
 const Explore: NextPage = () => {
@@ -16,12 +27,34 @@ const Explore: NextPage = () => {
 
   /* use date as the unique id for the images since they're not as long as the URL and APOD ensures that there is always one date per picture */
   const [liked, setLiked] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [imageData, setImageData] = useState<iImageData[]>([]);
 
-  // grabbing data from the API - uses a stale-while-revalidate hook which makes querying data really simple and extensible
-  const { data, isLoading, isError } = useImageData();
+  // ------ DATA FETCHING ------
+  // function to fetch data from the api
+  const fetchImageData = async (count: number, skip: number) => {
+    setIsLoading(true);
+    try {
+      const data = await getImageData({ count, skip });
+      setImageData([...imageData, ...data.slice().reverse()]);
+    } catch (error) {
+      console.log(error);
+      toast({
+        title: "Error",
+        description: "There was an error fetching the data",
+        status: "error",
+        duration: 10000,
+        isClosable: true,
+      });
+      router.push("/");
+    }
+    setIsLoading(false);
+  };
 
+  // ------ HANDLING LIKES -------
   // load previously saved liked posts
   useEffect(() => {
+    fetchImageData(FETCH_AMOUNT, 0);
     const savedLikedPosts = localStorage.getItem("likedPosts");
     if (savedLikedPosts) setLiked(JSON.parse(savedLikedPosts));
   }, []);
@@ -41,20 +74,33 @@ const Explore: NextPage = () => {
     }
   };
 
-  // Loading state while we wait for NASA's API to return data
-  if (isLoading) return <LoadingScreen />;
-  // Create an alert and push user back to main page if there was an error in the request
-  if (isError) {
-    toast({
-      title: "Error",
-      description: "There was an error fetching the data",
-      status: "error",
-      duration: 10000,
-      isClosable: true,
+  // ------ INFINITE SCROLL ------
+
+  const handleScroll = () => {
+    const bottom =
+      Math.ceil(window.innerHeight + window.scrollY) >=
+      document.documentElement.scrollHeight;
+
+    if (bottom) {
+      console.log("incrementing skip");
+      console.log("skip: ", imageData.length);
+      fetchImageData(FETCH_AMOUNT, imageData.length);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll, {
+      passive: true,
     });
-    router.push("/");
-    return null;
-  }
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [imageData]); // have to pass in image data so that the scroll handler can access the updated imageData array
+
+  // ------ LOADING SCREEN ------
+  // Loading state while we wait for NASA's API to return data
+  if (isLoading && imageData.length === 0) return <LoadingScreen />;
 
   return (
     <Center bgColor="background">
@@ -68,23 +114,32 @@ const Explore: NextPage = () => {
         {/* Responsive grid */}
         <SimpleGrid columns={{ sm: 1, md: 2, lg: 3 }} gap={6} w="100%">
           {/* reverse the array without modifying it to show data from most recent to least recent*/}
-          {data
-            .slice()
-            .reverse()
-            .map((el, index: number) => {
-              if (el.media_type === "image")
-                return (
-                  <GridItem justifyContent={"center"} key={index}>
-                    <ImageCard
-                      {...el}
-                      isLiked={liked.includes(el.date)}
-                      handleLikeClick={handleLikeClick}
-                    />
-                  </GridItem>
-                );
-            })}
+          {imageData.map((el, index: number) => {
+            if (el.media_type === "image")
+              return (
+                <GridItem justifyContent={"center"} key={index}>
+                  <ImageCard
+                    {...el}
+                    isLiked={liked.includes(el.date)}
+                    handleLikeClick={handleLikeClick}
+                  />
+                </GridItem>
+              );
+          })}
         </SimpleGrid>
       </Stack>
+      {isLoading && (
+        <Stack
+          p="2"
+          borderRadius="full"
+          bg="white"
+          position="absolute"
+          bottom="10"
+          left="50%"
+        >
+          <Spinner size="xl" color="blue.400" />
+        </Stack>
+      )}
     </Center>
   );
 };
