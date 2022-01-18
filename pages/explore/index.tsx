@@ -1,17 +1,10 @@
-import {
-  Button,
-  Center,
-  Heading,
-  Stack,
-  SimpleGrid,
-  GridItem,
-  useDisclosure,
-} from "@chakra-ui/react";
+import { Center, Heading, Stack, SimpleGrid, GridItem } from "@chakra-ui/react";
 import ImageCard from "../../util/components/ImageCard";
 import useImageData from "../../util/hooks/useImageData";
 import { useToast } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
+import LoadingScreen from "../../util/components/LoadingScreen";
 
 const Explore = () => {
   const toast = useToast();
@@ -41,7 +34,7 @@ const Explore = () => {
     }
   };
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <LoadingScreen />;
   if (isError) {
     toast({
       title: "Error",
