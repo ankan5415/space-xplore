@@ -1,7 +1,7 @@
 import "@fontsource/inter";
 import type { AppProps } from "next/app";
 import { ChakraProvider } from "@chakra-ui/react";
-import { theme } from "./styles";
+import { theme } from "../styles";
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ChakraProvider theme={theme}>
